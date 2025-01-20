@@ -1,8 +1,16 @@
 {
+  "type": "module",
   "devDependencies": {
     "@babel/cli": "^7.26.4",
     "@babel/core": "^7.26.0",
-    "@babel/node": "^7.26.0"
+    "@babel/node": "^7.26.0",
+    "@babel/preset-env": "^7.26.0"
+  },
+  "scripts": {
+    "build": "babel src -d dist --extensions \".js\" --out-file-extension .cjs",
+    "start": "npm run build && node dist/server.cjs",
+    "start:dev": "babel-node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "body-parser": "^1.20.3",
