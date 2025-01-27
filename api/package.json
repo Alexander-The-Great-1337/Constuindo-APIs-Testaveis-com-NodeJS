@@ -5,7 +5,10 @@
     "@babel/core": "^7.26.0",
     "@babel/node": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
-    "nodemon": "^3.1.9"
+    "chai": "^5.1.2",
+    "mocha": "^11.1.0",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0"
   },
   "scripts": {
     "build": "babel src -d dist --extensions \".js\" --out-file-extension .cjs",
