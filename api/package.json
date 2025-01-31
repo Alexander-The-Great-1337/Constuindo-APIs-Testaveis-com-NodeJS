@@ -8,13 +8,15 @@
     "chai": "^5.1.2",
     "mocha": "^11.1.0",
     "nodemon": "^3.1.9",
+    "sinon": "^19.0.2",
     "supertest": "^7.0.0"
   },
   "scripts": {
     "build": "babel src -d dist --extensions \".js\" --out-file-extension .cjs",
     "start": "npm run build && node dist/server.cjs",
     "start:dev": "nodemon src/server.js",
-    "test:integration": "set NODE_ENV=test&& mocha --config mocha.config.cjs"
+    "test:integration": "set NODE_ENV=test&& mocha --config test/integration/mocha.integration.config.cjs",
+    "test:unit": "set NODE_ENV=test&& mocha --config test/unit/mocha.unit.config.cjs"
   },
   "dependencies": {
     "body-parser": "^1.20.3",

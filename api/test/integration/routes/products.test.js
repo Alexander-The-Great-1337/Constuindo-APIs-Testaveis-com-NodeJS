@@ -2,7 +2,7 @@ import { request, expect } from "../helpers.js";
 
 describe('Routes: Products', () => {
   const defaultProduct = {
-    name: 'Default product',
+    name: 'Default products',
     description: 'product description',
     price: 100,
   };
