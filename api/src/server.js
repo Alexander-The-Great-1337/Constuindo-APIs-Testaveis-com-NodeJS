@@ -10,19 +10,18 @@ const PORT = process.env.PORT || 3000;
     });
 
     const existSignals = ["SIGINT", "SIGTERM", "SIGQUIT"];
-    existSignals.map(sig => {
+    existSignals.forEach(sig => {
       process.on(sig, () => {
-        server.close(err => {
+        server.close(async (err) => {
           if (err) {
             console.error(err);
-            process.exist(1);
+            process.exit(1);
           }
-          app.database.connection.close(function () {
-            console.info("Database connection closed!");
-            process.exit(0);
-          });
-        })
-      })
+          await app.database.close();
+          console.info("Database connection closed!");
+          process.exit(0);
+        });
+      });
     });
   } catch (error) {
     console.error(error);

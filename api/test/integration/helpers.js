@@ -1,8 +1,15 @@
 import supertest from 'supertest';
 import * as chai from 'chai';
-import app from '../../src/app.js';
+import setupApp from '../../src/app.js';
 
-const request = supertest(app);
 const expect = chai.expect;
 
-export { app, request, expect };
+let app;
+let request;
+
+const init = async () => {
+  app = await setupApp();
+  request = supertest(app);
+};
+
+export { init, app, request, expect };
