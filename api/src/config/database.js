@@ -11,9 +11,7 @@ const connect = async () => {
   }
 };
 
-const close = mongoose.connection.close();
-
 export default {
   connect,
-  close
+  connection: mongoose.connection
 };

@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3000;
             console.error(err);
             process.exit(1);
           }
-          await app.database.close();
+          await app.database.coonection.close();
           console.info("Database connection closed!");
           process.exit(0);
         });

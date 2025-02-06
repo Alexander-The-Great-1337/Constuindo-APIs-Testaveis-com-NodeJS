@@ -1,4 +1,4 @@
-import { init, request, expect } from "../helpers.js";
+import { init, request, expect, app } from "../helpers.js";
 
 describe('Routes: Products', () => {
   const defaultProduct = {
@@ -8,8 +8,10 @@ describe('Routes: Products', () => {
   };
 
   before(async () => {
-    await init(); // Initialize the app
+    await init();
   });
+
+  after(async () => await app.database.connection.close());
 
   describe('GET /products', () => {
     it('should return a list of products', done => {
