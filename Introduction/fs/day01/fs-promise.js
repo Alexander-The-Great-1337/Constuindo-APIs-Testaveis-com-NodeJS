@@ -7,4 +7,4 @@ const { unlink } = require('node:fs/promises');
   } catch (error) {
     console.error('there was an error:', error.message);
   }
-})('/temp/hello');
+})('./tmp/hello.txt');
