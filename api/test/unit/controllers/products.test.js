@@ -1,5 +1,6 @@
 import ProductsController from '../../../src/controllers/products.js';
 import sinon from 'sinon';
+import Product from '../../../src/models/product.js';
 import { expect } from '../helper.js';
 
 describe('Controllers: Products', () => {
