@@ -11,17 +11,36 @@ describe('Controllers: Products', () => {
   }];
   
   describe('get() products', () => {
-    it('should return a list of products', () => {
+    it('should return a list of products', async () => {
       const request = {};
       const response = {
         send: sinon.spy()
       };
 
-      const productsController = new ProductsController();
-      productsController.get(request, response);
+      Product.find = sinon.stub();
 
-      expect(response.send.called).to.be.true;
-      expect(response.send.calledWith(defaultProducts)).to.be.true;
+      Product.find.withArgs({}).resolves(defaultProducts);
+
+      const productsController = new ProductsController(Product);
+
+      await productsController.get(request, response);
+
+      sinon.assert.calledWith(response.send, defaultProducts);
+    });
+
+    it('should return 400 when an error occurs', async () => {
+      const request = {};
+      const response = {
+        send: sinon.spy(),
+        status: sinon.stub(),
+      };
+      response.status.withArgs(400).returns(response);
+      Product.find = sinon.stub();
+      Product.find.withArgs({}).rejects({ message: 'Error' });
+      
+      const productsController = new ProductsController(Product);
+      await productsController.get(request, response);
+      sinon.assert.calledWith(response.send, 'Error');
     });
   });
 });
