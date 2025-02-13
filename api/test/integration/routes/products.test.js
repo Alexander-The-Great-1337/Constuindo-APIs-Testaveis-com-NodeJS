@@ -2,6 +2,8 @@ import Product from "../../../src/models/product.js";
 import { init, request, expect, app } from "../helpers.js";
 
 describe('Routes: Products', () => {
+  const defaultId = '56cb91bdc3464f14678934ca';
+
   const defaultProduct = {
     name: 'Default product',
     description: 'product description',
@@ -10,7 +12,7 @@ describe('Routes: Products', () => {
 
   const expectedProduct = [{
     __v: 0,
-    _id: '56cb91bdc3464f14678934ca',
+    _id: defaultId,
     name: 'Default product',
     description: 'product description',
     price: 100,
@@ -38,6 +40,18 @@ describe('Routes: Products', () => {
         .get('/products')
         .end((err, res) => {
           expect(res.body).to.eql(expectedProduct);
+          done(err);
+        });
+    });
+  });
+
+  describe('when an id is specified', () => {
+    it('should return 200 with on project', done => {
+      request
+        .get(`products/${defaultId}`)
+        .end((err, res) => {
+          expect(res.statusCode).to.eql(200);
+          expect(res.body).to.eql([expectedProduct]);
           done(err);
         });
     });
