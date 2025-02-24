@@ -22,7 +22,7 @@ describe('Routes: Products', () => {
     await Product.deleteMany();
 
     const product = new Product(defaultProduct);
-    product._id = '56cb91bdc3464f14678934ca';
+    product._id = defaultId;
     return await product.save();
   });
 
@@ -45,13 +45,13 @@ describe('Routes: Products', () => {
     });
   });
 
-  describe('when an id is specified', () => {
+  describe('/products/:id when an id is specified', () => {
     it('should return 200 with on project', done => {
       request
-        .get(`products/${defaultId}`)
+        .get(`/products/${defaultId}`)
         .end((err, res) => {
           expect(res.statusCode).to.eql(200);
-          expect(res.body).to.eql([expectedProduct]);
+          expect(res.body).to.eql(expectedProduct);
           done(err);
         });
     });

@@ -72,7 +72,6 @@ describe('Controllers: Products', () => {
   describe('when adding products', () => {
     it('should save a product into the database', async () => {
       
-
     });
   });
 });
