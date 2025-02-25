@@ -66,7 +66,7 @@ describe('Routes: Products', () => {
         const expectedSavedProduct = {
           __v: 0,
           _id: customId,
-          name: 'Default procuct',
+          name: 'Default product',
           description: 'product description',
           price: 100,
         }
@@ -75,7 +75,7 @@ describe('Routes: Products', () => {
           .post('/products')
           .send(newProduct)
           .end((err, res) => {
-            expect(res.statusCode).to.eql(200);
+            expect(res.statusCode).to.eql(201);
             expect(res.body).to.eql(expectedSavedProduct)
             done(err);
           });
