@@ -13,16 +13,32 @@ class ProductsController {
   }
 
   async getById(req, res) {
-      const response = await Promise.resolve([
-      {
-      __v: 0,
-      _id: '56cb91bdc3464f14678934ca',
-      name: 'Default product',
-      description: 'product description',
-      price: 100
+    const { params: { id } } = req;
+    try {
+      const product = await this.Product.find({ _id: id });
+
+      res.send(product);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async create(req, res) {
+    try {
+      const { name, description, price } = req.body;
+
+      if (!name || !description || !price ) {
+        res.status(400).json({ message: 'All fields must be filled.' });
+        return;
       }
-    ]);
-    res.send(response);
+
+      const product = new this.Product({ name, description, price });
+      await product.save();
+      
+      return res.status(201).send(product);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 

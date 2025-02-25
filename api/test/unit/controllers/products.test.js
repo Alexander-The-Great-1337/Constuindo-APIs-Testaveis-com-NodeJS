@@ -16,7 +16,7 @@ describe('Controllers: Products', () => {
   
   describe('get() products', () => {
     it('should return a list of products', async () => {
-      const response = {
+      const response =     {
         send: sinon.spy()
       };
 
@@ -47,7 +47,7 @@ describe('Controllers: Products', () => {
     });
   });
 
-  describe('getById()', () => {
+  describe('getById() products', () => {
     it('should return one product', async () => {
       const fakeId = 'a-fake-id';
       const request = {
@@ -69,10 +69,35 @@ describe('Controllers: Products', () => {
     });
   });
 
-  describe('when adding products', () => {
-    it('should save a product into the database', async () => {
-      
+  describe('create() product', () => {
+    describe('when adding a product', () => {
+      it('should save a product into the database', async () => {
+        const requestWithBody = Object.assign(
+          {},
+          { body: defaultProduct[0] },
+          defaultRequest
+        );
 
+        const response = {
+          send: sinon.spy(),
+          status: sinon.stub()
+        };
+
+        class fakeProduct {
+          save() {}
+        }
+
+        response.status.withArgs(201).returns(response);
+        sinon
+          .stub(fakeProduct.prototype, 'save')
+          .withArgs()
+          .resolves();
+
+        const productsController = new ProductsController(fakeProduct);
+        await productsController.create(requestWithBody, response);
+        sinon.assert.calledWith(response.send);
+      });
     });
   });
+
 });
