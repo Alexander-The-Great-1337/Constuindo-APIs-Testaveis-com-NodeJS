@@ -46,7 +46,7 @@ describe('Routes: Products', () => {
   });
   describe('GET /products/:id ', () => {
     context('when an id is specified', () => {
-      it('should return 200 with on project', done => {
+      it('should return status 200 with one single product', done => {
         request
           .get(`/products/${defaultId}`)
           .end((err, res) => {
@@ -82,4 +82,24 @@ describe('Routes: Products', () => {
       });
     })
   });
+
+  describe('PUT /products/:id', () => {
+    context('when  editing a product', () => {
+      it('should update the product and return 200 as status code', done => {
+        const customProcuct = {
+          name: 'Custom name'
+        };
+
+        const updatedProduct = Object.assign({}, customProcuct, defaultProduct);
+
+        request
+          .put(`/products/${defaultId}`)
+          .send(updatedProduct)
+          .end((err, res) => {
+            expect(res.statusCode).to.eql(200);
+            done(err);
+          });
+      });
+    })
+  })
 });
