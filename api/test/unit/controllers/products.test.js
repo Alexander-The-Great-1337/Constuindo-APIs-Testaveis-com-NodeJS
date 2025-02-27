@@ -204,4 +204,60 @@ describe('Controllers: Products', () => {
       });
     });
   });
+
+  describe('delete() product', () => {
+    it('should respond with 204 when a product has been deleted', async () => {
+      const fakeId = 'a-fake-id';
+      const request = {
+        params: {
+          id: fakeId,
+        }
+      };
+
+      const response = {
+        sendStatus: sinon.spy(),
+      };
+
+      class fakeProduct {
+        static deleteOne() {}
+      };
+
+      const deleteOneStub = sinon.stub(fakeProduct, 'deleteOne');
+
+      deleteOneStub.withArgs({ _id: fakeId }).resolves([1]);
+
+      const productsController = new ProductsController(fakeProduct);
+
+      await productsController.remove(request, response);
+      sinon.assert.calledWith(response.sendStatus, 204);
+    });
+    context('when an error occours', () => {
+      it('should return 400', async () => {
+        const fakeId = 'a-fake-id';
+        const request = {
+          params: {
+            id: fakeId
+          },
+        };
+        const response = {
+          send: sinon.spy(),
+          status: sinon.stub(),
+        };
+
+        class fakeProduct {
+          static deleteOne() {}
+        };
+
+        const deleteOneStub = sinon.stub(fakeProduct, 'deleteOne');
+
+        deleteOneStub.withArgs({ _id: fakeId }).rejects({ message: 'Error' });
+        response.status.withArgs(400).returns(response);
+
+        const productsController = new ProductsController(fakeProduct);
+
+        await productsController.remove(request, response);
+        sinon.assert.calledWith(response.send, 'Error');
+      });
+    })
+  });
 });
