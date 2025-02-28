@@ -16,10 +16,12 @@
     "start": "npm run build && node dist/server.cjs",
     "start:dev": "nodemon src/server.js",
     "test:integration": "set NODE_ENV=test&& mocha --config test/integration/mocha.integration.config.cjs",
-    "test:unit": "set NODE_ENV=test&& mocha --config test/unit/mocha.unit.config.cjs"
+    "test:unit": "set NODE_ENV=test&& mocha --config test/unit/mocha.unit.config.cjs",
+    "test": "npm run test:unit && npm run test:integration"
   },
   "dependencies": {
     "body-parser": "^1.20.3",
+    "config": "^3.3.12",
     "express": "^4.21.2",
     "mongoose": "^8.9.6"
   }

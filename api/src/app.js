@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import routes from './routes/index.js';
-import database from './config/database.js';
+import database from './database.js';
 
 const configureExpress = () => {
   const app = express();
