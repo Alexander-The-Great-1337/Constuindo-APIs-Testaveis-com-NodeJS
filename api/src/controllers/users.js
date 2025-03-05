@@ -33,6 +33,26 @@ class UsersController {
         }
     }
 
+    async update(req, res) {
+        try {
+           const user = await this.User.findById(req.params.id);
+           const {name, email, role } = req.body;
+
+            user.name = name;
+            user.email = email;
+            user.role = role;
+
+            if (body.password) {
+                user.password = body.password;
+            };
+            await user.save();
+
+            res.sendStatus(200);
+        } catch (error) {
+            res.status(422).send(error.message);
+        }
+    }
+
 }
 
 export default UsersController;

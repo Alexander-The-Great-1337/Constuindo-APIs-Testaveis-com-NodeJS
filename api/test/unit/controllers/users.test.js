@@ -125,4 +125,78 @@ describe('Controller: Users', () => {
             });
         });
     });
+
+    describe('update() user', () => {
+        it('sould respond with 200 when the user has been updated', async () => {
+            const fakeId = 'a-fake-id';
+            const updatedUser = {
+                _id: fakeId,
+                name: 'Updated User',
+                email: 'user@mail.com',
+                password: 'password',
+                role: 'user'
+            };
+
+            const request = {
+                params: {
+                    id: fakeId,
+                },
+                body: updatedUser,
+            };
+            const response = {
+                sendStatus: sinon.spy(),
+            };
+            class fakeUser {
+                static findById() {}
+                save() {}
+            };
+            const fakeUserInstance = new fakeUser();
+
+            const saveSpy = sinon.spy(fakeUser.prototype, 'save');
+            const findByIdStub = sinon.stub(fakeUser, 'findById');
+            findByIdStub.withArgs(fakeId).resolves(fakeUserInstance);
+
+            const usersController = new UsersController(fakeUser);
+
+            await usersController.update(request, response);
+            sinon.assert.calledWith(response.sendStatus, 200);
+            sinon.assert.calledOnce(saveSpy);
+        });
+        context('when an error occurs', () => {
+            it('should return 422', async () => {
+                const fakeId = 'a-fake-id';
+                const updateUser = {
+                    _id: fakeId,
+                    name: 'Updated User',
+                    email: 'user@email.com',
+                    password: 'password',
+                    role: 'user'
+                };
+
+                const request = {
+                    params: {
+                        id: fakeId
+                    },
+                    body: updateUser
+                };
+                const response = {
+                    send: sinon.spy(),
+                    status: sinon.stub()
+                };
+
+                class fakeUser {
+                    static findById() {}
+                };
+
+                const findByIdStub = sinon.stub(fakeUser, 'findById');
+                findByIdStub.withArgs(fakeId).resolves({ message: 'Error' });
+                response.status.withArgs(422).returns(response);
+
+                const usersController = new UsersController(fakeUser);
+
+                await usersController.update(request, response);
+                sinon.assert.calledWith(response.send, 'Error');
+            });
+        });
+    });
 });
