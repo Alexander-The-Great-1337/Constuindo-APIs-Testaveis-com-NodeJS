@@ -34,22 +34,32 @@ class UsersController {
     }
 
     async update(req, res) {
+        const body = req.body;
         try {
-           const user = await this.User.findById(req.params.id);
-           const {name, email, role } = req.body;
+            const user = await this.User.findById(req.params.id);
 
-            user.name = name;
-            user.email = email;
-            user.role = role;
+            user.name = body.name;
+            user.email = body.email;
+            user.role = body.role;
 
             if (body.password) {
                 user.password = body.password;
-            };
+            }
+
             await user.save();
 
             res.sendStatus(200);
         } catch (error) {
             res.status(422).send(error.message);
+        }
+    }
+
+    async remove(req, res) {
+        try {
+            await this.User.deleteOne({ _id: req.params.id });
+            res.sendStatus(204);
+        } catch (error) {
+            res.status(400).send(err.message);
         }
     }
 

@@ -199,4 +199,57 @@ describe('Controller: Users', () => {
             });
         });
     });
+
+    describe('delete() user', () => {
+        it('should respond with 204 when the user has been deleted', async () => {
+            const fakeId = 'a-fake-id';
+            const request = {
+                params: {
+                    id: fakeId
+                }
+            };
+            const response = {
+                sendStatus: sinon.spy()
+            };
+
+            class fakeUser {
+                static remove() {}
+            };
+
+            const removeStub = sinon.stub(fakeUser, 'remove');
+
+            removeStub.withArgs({ _id: fakeId }).resolves([1]);
+
+            const usersController = new UsersController(fakeUser);
+
+            await usersController.remove(request, response);
+            sinon.assert.calledWith(response.sendStatus, 204);
+        });
+        context('when an error occurs', () => {
+            it('should return 400', async () => {
+                const fakeId = 'a-fake-id';
+                const request = {
+                    params: {
+                        id: fakeId
+                    }
+                };
+                const response = {
+                    send: sinon.spy(),
+                    status: sinon.stub()
+                };
+
+                class fakeUser {
+                    static remove() {}
+                }
+
+                const removeStub = sinon.stub(fakeUser, 'remove');
+                removeStub.withArgs({ _id: fakeId }).rejects({ message: 'Error' });
+
+                const usersController = new UsersController(fakeUser);
+
+                await usersController.remove(request, response);
+                sinon.assert.calledWith(response.send, 'Error');
+            });
+        });
+    });
 });
