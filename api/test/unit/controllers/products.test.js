@@ -2,7 +2,7 @@ import ProductsController from '../../../src/controllers/products.js';
 import sinon from 'sinon';
 import Product from '../../../src/models/product.js';
 
-describe('Controllers: Products', () => {
+describe('Controller: Products', () => {
   const defaultRequest = {
     params: {},
   }

@@ -2,7 +2,7 @@ class ProductsController {
   constructor(Product) {
     this.Product = Product;
   }
-  
+
   async get(req, res) {
     try {
       const products = await this.Product.find({});
