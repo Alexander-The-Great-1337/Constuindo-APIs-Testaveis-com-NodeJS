@@ -59,7 +59,7 @@ class UsersController {
             await this.User.deleteOne({ _id: req.params.id });
             res.sendStatus(204);
         } catch (error) {
-            res.status(400).send(err.message);
+            res.status(400).send(error.message);
         }
     }
 

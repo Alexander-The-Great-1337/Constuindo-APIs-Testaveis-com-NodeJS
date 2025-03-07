@@ -191,7 +191,7 @@ describe('Controller: Users', () => {
                 const findByIdStub = sinon.stub(fakeUser, 'findById');
                 findByIdStub.withArgs(fakeId).resolves({ message: 'Error' });
                 response.status.withArgs(422).returns(response);
-
+                
                 const usersController = new UsersController(fakeUser);
 
                 await usersController.update(request, response);
