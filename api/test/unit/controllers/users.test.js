@@ -165,33 +165,32 @@ describe('Controller: Users', () => {
         context('when an error occurs', () => {
             it('should return 422', async () => {
                 const fakeId = 'a-fake-id';
-                const updateUser = {
+                const updatedUser = {
                     _id: fakeId,
                     name: 'Updated User',
-                    email: 'user@email.com',
+                    email: 'user@mail.com',
                     password: 'password',
                     role: 'user'
                 };
-
                 const request = {
                     params: {
                         id: fakeId
                     },
-                    body: updateUser
+                    body: updatedUser
                 };
                 const response = {
                     send: sinon.spy(),
-                    status: sinon.stub()
+                    status: sinon.stub().returnsThis(),
                 };
-
+  
                 class fakeUser {
                     static findById() {}
-                };
+                }
 
                 const findByIdStub = sinon.stub(fakeUser, 'findById');
-                findByIdStub.withArgs(fakeId).resolves({ message: 'Error' });
+                findByIdStub.withArgs(fakeId).rejects({ message: 'Error' });
                 response.status.withArgs(422).returns(response);
-                
+     
                 const usersController = new UsersController(fakeUser);
 
                 await usersController.update(request, response);
@@ -211,14 +210,13 @@ describe('Controller: Users', () => {
             const response = {
                 sendStatus: sinon.spy()
             };
-
             class fakeUser {
-                static remove() {}
-            };
+                static deleteOne() {}
+            }
 
-            const removeStub = sinon.stub(fakeUser, 'remove');
+            const deleteStub = sinon.stub(fakeUser, 'deleteOne');
 
-            removeStub.withArgs({ _id: fakeId }).resolves([1]);
+            deleteStub.withArgs({ _id: fakeId }).resolves({ deletedCount: 1 }); 
 
             const usersController = new UsersController(fakeUser);
 
@@ -237,17 +235,20 @@ describe('Controller: Users', () => {
                     send: sinon.spy(),
                     status: sinon.stub()
                 };
-
                 class fakeUser {
-                    static remove() {}
+                    static deleteOne() {}
                 }
 
-                const removeStub = sinon.stub(fakeUser, 'remove');
-                removeStub.withArgs({ _id: fakeId }).rejects({ message: 'Error' });
+                const deleteStub = sinon.stub(fakeUser, 'deleteOne');
+
+                deleteStub.withArgs({ _id: fakeId }).rejects(new Error('Error'));
+
+                response.status.withArgs(400).returns(response);
 
                 const usersController = new UsersController(fakeUser);
 
                 await usersController.remove(request, response);
+                sinon.assert.calledWith(response.status, 400);
                 sinon.assert.calledWith(response.send, 'Error');
             });
         });
