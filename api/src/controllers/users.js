@@ -63,6 +63,10 @@ class UsersController {
         }
     }
 
+    async authenticate(req, res) {
+        return res.send({ token: 'fake-token' });
+    }
+
 }
 
 export default UsersController;

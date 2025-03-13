@@ -26,5 +26,12 @@ describe('authMidleware', () => {
       done();
     })
   });
+  it('should call next middleware if theres no token', done => {
+    const reqFake = {
+      headers: {}
+    };
+    const resFake = {};
+    authMiddleware(reqFake, resFake, done);
+  });
 });
 
