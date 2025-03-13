@@ -1,6 +1,7 @@
 import UsersController from "../../../src/controllers/users.js";
 import sinon from 'sinon';
 import User from "../../../src/models/user.js";
+import { expect } from "chai";
 
 describe('Controller: Users', () => {
     const defaultUser = [
@@ -251,6 +252,22 @@ describe('Controller: Users', () => {
                 sinon.assert.calledWith(response.status, 400);
                 sinon.assert.calledWith(response.send, 'Error');
             });
+        });
+    });
+    describe('authenticate', () => {
+        it('should authenticate a user', done => {
+            const fakeReq = {
+                body: {}
+            }
+            const fakeRes = {
+                send: token => {
+                    expect(token).to.eql({ token: 'fake-token' });
+                    done();
+                }
+            };
+            const userController = new UsersController({});
+            userController
+                .authenticate(fakeReq, fakeRes);
         });
     });
 });
