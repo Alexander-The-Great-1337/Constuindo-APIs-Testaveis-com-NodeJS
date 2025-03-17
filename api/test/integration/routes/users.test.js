@@ -8,7 +8,6 @@ describe('Routes: Users', () => {
 
   after(async () => await app.database.connection.close());
 
-
   const defaultId = '56cb91bdc3464f14678934ca';
 
   const defaultAdmin = {
