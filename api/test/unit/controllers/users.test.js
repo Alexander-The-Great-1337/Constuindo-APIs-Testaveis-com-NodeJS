@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import config from 'config';
 import bcrypt, { hashSync } from 'bcrypt';
 import User from "../../../src/models/user.js";
-import { expect } from "chai";
 
 describe('Controller: Users', () => {
     const defaultUser = [
@@ -138,7 +137,7 @@ describe('Controller: Users', () => {
                 name: 'Updated User',
                 email: 'user@mail.com',
                 password: 'password',
-                role: 'user'
+                role: 'user',
             };
 
             const request = {
@@ -174,13 +173,13 @@ describe('Controller: Users', () => {
                     name: 'Updated User',
                     email: 'user@mail.com',
                     password: 'password',
-                    role: 'user'
+                    role: 'user',
                 };
                 const request = {
                     params: {
-                        id: fakeId
+                        id: fakeId,
                     },
-                    body: updatedUser
+                    body: updatedUser,
                 };
                 const response = {
                     send: sinon.spy(),
@@ -208,11 +207,11 @@ describe('Controller: Users', () => {
             const fakeId = 'a-fake-id';
             const request = {
                 params: {
-                    id: fakeId
+                    id: fakeId,
                 }
             };
             const response = {
-                sendStatus: sinon.spy()
+                sendStatus: sinon.spy(),
             };
             class fakeUser {
                 static deleteOne() {}
@@ -232,12 +231,12 @@ describe('Controller: Users', () => {
                 const fakeId = 'a-fake-id';
                 const request = {
                     params: {
-                        id: fakeId
+                        id: fakeId,
                     }
                 };
                 const response = {
                     send: sinon.spy(),
-                    status: sinon.stub()
+                    status: sinon.stub(),
                 };
                 class fakeUser {
                     static deleteOne() {}
@@ -266,14 +265,14 @@ describe('Controller: Users', () => {
                 name: 'Jhon Doe',
                 email: 'jhondoe@mail.com',
                 password: '12345',
-                role: 'admin'
+                role: 'admin',
             };
 
             const userWithEncryptedPassword = {...user, password: bcrypt.hashSync(user.password, 10) };
 
             fakeUserModel.findOne.withArgs({ email: user.email }).resolves({
                 ...userWithEncryptedPassword,
-                toJSON: () => ({ email: user.email })
+                toJSON: () => ({ email: user.email }),
             });
 
             const jwtToken = jwt.sign(userWithEncryptedPassword, config.get('auth.key'),
@@ -302,6 +301,33 @@ describe('Controller: Users', () => {
                 password: '12345',
                 role: 'admin',
             };
+            const fakeReq = {
+                body: user,
+            };
+            const fakeRes = {
+                sendStatus: sinon.spy(),
+            };
+            const usersController = new UsersController(fakeUserModel);
+            await usersController.authenticate(fakeReq, fakeRes);
+            sinon.assert.calledWith(fakeRes.sendStatus, 401);
+        });
+        it('should return 401 when the password does not match', async () => {
+            const fakeUserModel = {
+                findOne: sinon.stub(),
+            };
+            const user = {
+                name: 'Jhon Doe',
+                email: 'jhondoe@mail.com',
+                password: '12345',
+                role: 'admin',
+            };
+            const userWithDifferentPassword = {
+                ...user,
+                password: bcrypt.hashSync('another_password', 10),
+            };
+            fakeUserModel.findOne.withArgs({ email: user.email }).resolves({
+                ...userWithDifferentPassword
+            });
             const fakeReq = {
                 body: user,
             };
