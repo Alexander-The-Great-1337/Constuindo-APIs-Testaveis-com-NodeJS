@@ -1,6 +1,6 @@
 import AuthService from '../../../src/services/auth.js';
 import bcrypt from 'bcrypt';
-import { expect } from 'chai';
+import { expect, use } from 'chai';
 import Util from 'node:util';
 import sinon from 'sinon';
 
@@ -29,6 +29,20 @@ describe('Service: Auth', () => {
       );
       const res = await authService.authenticate(user);
       expect(res).to.eql(userFormDatabase);
+    });
+    it('should return false when the password does not match', async () => {
+      const user = {
+        email: 'jhondoe@mail.com',
+        password: '12345',
+      };
+      const fakeUserModel = {
+        findOne: sinon.stub(),
+      };
+      fakeUserModel.findOne.resolves({ email: user.email, password: 'aFakeHasedPassword' });
+      const authService = new AuthService(fakeUserModel);
+      const response = await authService.authenticate(user);
+
+      expect(response).to.be.false;
     });
   });
 });
