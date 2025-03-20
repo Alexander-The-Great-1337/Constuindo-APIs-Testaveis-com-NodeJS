@@ -1,5 +1,7 @@
 import User from "../../../src/models/user.js";
 import { init, request, expect, app } from "../helpers.js";
+import jwt from 'jsonwebtoken';
+import config from 'config';
 
 describe('Routes: Users', () => {
   before(async () => {
@@ -60,7 +62,7 @@ describe('Routes: Users', () => {
             done(err);
           }); 
       });
-    })
+    });
   })
 
   describe('GET /users', () => {
