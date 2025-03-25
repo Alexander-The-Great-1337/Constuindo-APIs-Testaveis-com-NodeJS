@@ -1,7 +1,6 @@
 import User from "../../../src/models/user.js";
 import { init, request, expect, app } from "../helpers.js";
-import jwt from 'jsonwebtoken';
-import config from 'config';
+import AuthService from '../../../src/services/auth.js';
 
 describe('Routes: Users', () => {
   before(async () => {
@@ -25,6 +24,8 @@ describe('Routes: Users', () => {
     role: 'admin'
   };
 
+  const authToken = AuthService.generateToken(expectedAdminUser);
+
   beforeEach(async() => {
     const user = new User(defaultAdmin);
     user._id = '56cb91bdc3464f14678934ca';
@@ -40,8 +41,9 @@ describe('Routes: Users', () => {
 
         request
           .post(`/users/authenticate`)
+          .set({'x-access-token': authToken})
           .send({
-            email: 'jhon@gmail.com',
+            email: 'jhon@mail.com',
             password: '123password',
           })
           .end((err, res) => {
@@ -53,6 +55,7 @@ describe('Routes: Users', () => {
       it('should return unauthorized when the password does not match', done => {
         request
           .post(`/users/authenticate`)
+          .set({'x-access-token': authToken})
           .send({
             email: 'jhon@mail.com',
             password: 'wrongpassword'
@@ -69,6 +72,7 @@ describe('Routes: Users', () => {
     it('should return a list of users', (done) => {
       request
         .get('/users')
+        .set({'x-access-token': authToken})
         .end((err, res) => {
           expect(res.body).to.eql([expectedAdminUser]);
           done(err);
@@ -78,6 +82,7 @@ describe('Routes: Users', () => {
       it('should return 200 with one user', done => {
         request
           .get(`/users/${defaultId}`)
+          .set({'x-access-token': authToken})
           .end((err, res) => {
             expect(res.statusCode).to.eql(200);
             expect(res.body).to.eql([expectedAdminUser]);
@@ -100,6 +105,7 @@ describe('Routes: Users', () => {
 
         request
           .post('/users')
+          .set({'x-access-token': authToken})
           .send(newUser)
           .end((err, res) => {
             expect(res.statusCode).to.eql(201);
@@ -121,6 +127,7 @@ describe('Routes: Users', () => {
         request
           .put(`/users/${defaultId}`)
           .send(updatedUser)
+          .set({'x-access-token': authToken})
           .end((err, res) => {
             expect(res.status).to.eql(200);
             done(err);
@@ -135,6 +142,7 @@ describe('Routes: Users', () => {
 
         request
           .delete(`/users/${defaultId}`)
+          .set({'x-access-token': authToken})
           .end((err, res) => {
             expect(res.status).that.eql(204);
             done(err);

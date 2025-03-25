@@ -258,9 +258,7 @@ describe('Controller: Users', () => {
     });
     describe('authenticate', () => {
         it('should authenticate a user', async () => {
-            const fakeUserModel = {
-                findOne: sinon.stub(),
-            };
+            const fakeUserModel = {};
             const user = {
                 name: 'Jhon Doe',
                 email: 'jhondoe@mail.com',
@@ -269,15 +267,24 @@ describe('Controller: Users', () => {
             };
 
             const userWithEncryptedPassword = {...user, password: bcrypt.hashSync(user.password, 10) };
-
-            fakeUserModel.findOne.withArgs({ email: user.email }).resolves({
-                ...userWithEncryptedPassword,
-                toJSON: () => ({ email: user.email }),
-            });
-
-            const jwtToken = jwt.sign(userWithEncryptedPassword, config.get('auth.key'),
-                { expiresIn: config.get('auth.tokenExpiresIn')}
+            
+            const jwtToken = jwt.sign(
+                userWithEncryptedPassword,
+                config.get('auth.key'),
+                {
+                    expiresIn: config.get('auth.tokenExpiresIn')
+                },
             );
+            
+            class FakeAuthService {
+                authenticate() {
+                    return Promise.resolve(userWithEncryptedPassword);
+                }
+
+                static generateToken() {
+                    return jwtToken
+                }
+            };
 
             const fakeReq  = {
                 body: user,
@@ -286,15 +293,18 @@ describe('Controller: Users', () => {
                 send: sinon.stub(),
             };
 
-            const usersController = new UsersController(fakeUserModel);
+            const usersController = new UsersController(fakeUserModel, FakeAuthService);
             await usersController.authenticate(fakeReq, fakeRes);
             sinon.assert.calledWith(fakeRes.send, { token: jwtToken });
         });
         it('should return 401 when the user can not be found', async () => {
-            const fakeUserModel = {
-                findOne: sinon.stub(),
+            const fakeUserModel = {};
+            class FakeAuthService {
+                authenticate() {
+                    return Promise.resolve(false);
+                }
             };
-            fakeUserModel.findOne.resolves(null);
+
             const user = {
                 name: 'Jhon Doe',
                 email: 'jhondoe@email.com',
@@ -307,34 +317,7 @@ describe('Controller: Users', () => {
             const fakeRes = {
                 sendStatus: sinon.spy(),
             };
-            const usersController = new UsersController(fakeUserModel);
-            await usersController.authenticate(fakeReq, fakeRes);
-            sinon.assert.calledWith(fakeRes.sendStatus, 401);
-        });
-        it('should return 401 when the password does not match', async () => {
-            const fakeUserModel = {
-                findOne: sinon.stub(),
-            };
-            const user = {
-                name: 'Jhon Doe',
-                email: 'jhondoe@mail.com',
-                password: '12345',
-                role: 'admin',
-            };
-            const userWithDifferentPassword = {
-                ...user,
-                password: bcrypt.hashSync('another_password', 10),
-            };
-            fakeUserModel.findOne.withArgs({ email: user.email }).resolves({
-                ...userWithDifferentPassword
-            });
-            const fakeReq = {
-                body: user,
-            };
-            const fakeRes = {
-                sendStatus: sinon.spy(),
-            };
-            const usersController = new UsersController(fakeUserModel);
+            const usersController = new UsersController(fakeUserModel, FakeAuthService);
             await usersController.authenticate(fakeReq, fakeRes);
             sinon.assert.calledWith(fakeRes.sendStatus, 401);
         });
