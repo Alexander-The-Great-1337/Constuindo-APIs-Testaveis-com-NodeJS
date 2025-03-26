@@ -1,4 +1,5 @@
 import Product from "../../../src/models/product.js";
+import AuthService from "../../../src/services/auth.js";
 import { init, request, expect, app } from "../helpers.js";
 
 describe('Routes: Products', () => {
@@ -17,6 +18,15 @@ describe('Routes: Products', () => {
     description: 'product description',
     price: 100,
   }];
+
+  const expectedAdminUser = {
+    _id: defaultId,
+    name: 'Jhon Doe',
+    email: 'jhon@mail.com',
+    role: 'admin'
+  };
+
+  const authToken = AuthService.generateToken(expectedAdminUser);
 
   beforeEach(async () => {
     await Product.deleteMany();
@@ -38,6 +48,7 @@ describe('Routes: Products', () => {
     it('should return a list of products', done => {
       request
         .get('/products')
+        .set({'x-access-token': authToken})
         .end((err, res) => {
           expect(res.body).to.eql(expectedProduct);
           done(err);
@@ -49,6 +60,7 @@ describe('Routes: Products', () => {
       it('should return status 200 with one single product', done => {
         request
           .get(`/products/${defaultId}`)
+          .set({'x-access-token': authToken})
           .end((err, res) => {
             expect(res.statusCode).to.eql(200);
             expect(res.body).to.eql(expectedProduct);
@@ -73,6 +85,7 @@ describe('Routes: Products', () => {
 
         request
           .post('/products')
+          .set({'x-access-token': authToken})
           .send(newProduct)
           .end((err, res) => {
             expect(res.statusCode).to.eql(201);
@@ -94,6 +107,7 @@ describe('Routes: Products', () => {
 
         request
           .put(`/products/${defaultId}`)
+          .set({'x-access-token': authToken})
           .send(updatedProduct)
           .end((err, res) => {
             expect(res.statusCode).to.eql(200);
@@ -108,6 +122,7 @@ describe('Routes: Products', () => {
       it('should delete a product and return 204 as status code', done => {
         request
           .delete(`/products/${defaultId}`)
+          .set({'x-access-token': authToken})
           .end((err, res) => {
             expect(res.status).to.eql(204);
             done(err);

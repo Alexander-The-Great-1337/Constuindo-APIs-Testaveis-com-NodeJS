@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import config from "config";
 
-const mongodbUrl = config.get('database.mongoUrl');
+const mongodbUrl = config.get("database.mongoUrl");
 
 const connect = async () => {
   try {
@@ -14,5 +14,5 @@ const connect = async () => {
 
 export default {
   connect,
-  connection: mongoose.connection
+  connection: mongoose.connection,
 };

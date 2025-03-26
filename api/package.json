@@ -5,9 +5,13 @@
     "@babel/core": "^7.26.0",
     "@babel/node": "^7.26.0",
     "@babel/preset-env": "^7.26.0",
+    "babel-eslint": "^10.1.0",
     "chai": "^5.1.2",
+    "eslint": "^9.23.0",
+    "eslint-plugin-node": "^11.1.0",
     "mocha": "^11.1.0",
     "nodemon": "^3.1.9",
+    "prettier": "^3.5.3",
     "sinon": "^19.0.2",
     "supertest": "^7.0.0"
   },
@@ -17,7 +21,12 @@
     "start:dev": "nodemon src/server.js",
     "test:integration": "set NODE_ENV=test&& mocha --config test/integration/mocha.integration.config.cjs",
     "test:unit": "set NODE_ENV=test&& mocha --config test/unit/mocha.unit.config.cjs",
-    "test": "npm run test:unit && npm run test:integration"
+    "test": "npm run test:unit && npm run test:integration",
+    "lint": "eslint src --ext .js",
+    "lint:fix": "eslint src --fix --ext .js",
+    "prettier:list": "prettier --check 'src/**/*.js'",
+    "prettier:fix": "prettier --write 'src/**/*.js'",
+    "style:fix": "npm run lint:fix & npm run prettier:fix"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
