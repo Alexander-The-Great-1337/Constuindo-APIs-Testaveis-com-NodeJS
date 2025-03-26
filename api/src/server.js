@@ -1,4 +1,4 @@
-import setupApp from './app.js';
+import setupApp from "./app.js";
 
 const PORT = process.env.PORT || 3000;
 
@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
     });
 
     const existSignals = ["SIGINT", "SIGTERM", "SIGQUIT"];
-    existSignals.forEach(sig => {
+    existSignals.forEach((sig) => {
       process.on(sig, () => {
         server.close(async (err) => {
           if (err) {

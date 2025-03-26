@@ -26,9 +26,9 @@ class ProductsController {
   async create(req, res) {
     try {
       const product = new this.Product(req.body);
-  
+
       await product.save();
-  
+
       res.status(201).send(product);
     } catch (error) {
       res.status(422).send(error.message);
@@ -47,7 +47,7 @@ class ProductsController {
   async remove(req, res) {
     try {
       await this.Product.deleteOne({ _id: req.params.id });
-      res.sendStatus(204); 
+      res.sendStatus(204);
     } catch (error) {
       res.status(400).send(error.message);
     }
