@@ -6,6 +6,6 @@ const router = express.Router();
 
 router.use("/products", productsRouter);
 router.use("/users", usersRouter);
-router.get("/", (req, res) => res.end("Hello World!"));
+router.get("/", (req, res) => res.end("Hello Test!"));
 
 export default router;
