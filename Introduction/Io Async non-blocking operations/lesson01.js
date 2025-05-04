@@ -4,9 +4,9 @@ const path = require('node:path');
 let fileContent;
 
 const someMath = 1 + 1;
-const filePath = path.resolve(__dirname, '../data/big-file.txt');
+const filePath = path.resolve(__dirname, "../data/big-file.txt");
 
-fs.readFile(filePath, 'utf8', function (err, content) {
+fs.readFile(filePath, "utf8", function (err, content) {
   if (err) {
     return console.log(err);
   }
