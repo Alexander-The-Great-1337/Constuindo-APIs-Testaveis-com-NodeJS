@@ -1,4 +1,4 @@
-const { unlink } = require('node:fs/promises');
+const { unlink } = require("node:fs/promises");
 
 (async function (path) {
   try {
@@ -7,4 +7,4 @@ const { unlink } = require('node:fs/promises');
   } catch (error) {
     console.error('there was an error:', error.message);
   }
-})('./tmp/hello.txt');
+})("./tmp/hello.txt");
